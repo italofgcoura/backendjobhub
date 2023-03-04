@@ -1,0 +1,10 @@
+"build": "tsc",
+    "dev": "nodemon src/index.ts",
+    "start": "node dist",
+    "backend": "npm run mongo && npm run backendserver",
+    "backendserver": "nodemon index.ts",
+    "mongo": "docker start mongo",
+    "deploy": "ts-node index.ts",
+    "dockerup": "docker-compose up -d --build",
+    "deployV": "vercel deploy --prod",
+    "startV": "vercel dev"
