@@ -24,6 +24,7 @@ model User {
 
 model Job {
   id            String   @id @default(cuid())
+  createdAt  DateTime   @default(now())
   companyName   String
   companyId     String
   title         String
@@ -31,9 +32,9 @@ model Job {
   description   String
   benefits      String
   requirements  String
-  wage          BigInt
+  wage          Int
   contact       String
-  startDeadLine DateTime
+  startDeadLine String
 
   user User @relation(fields: [companyId], references: [id])
 

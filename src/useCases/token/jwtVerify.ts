@@ -11,6 +11,6 @@ export default (req, res, next) => {
 
   // checkIfValidToken(token, req, res, next);
 
-  checkIfValidFirebaseToken(token, req, res, next);
+  checkIfValidFirebaseToken(req, res, next);
 
 };

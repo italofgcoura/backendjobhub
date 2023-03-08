@@ -1,13 +1,22 @@
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
 import { Job } from '../models/Job';
 import sleep from '../utils/sleep';
 
 async function listJob(jobId: string) {
-  return await Job.findById(jobId).lean();
+
+  return await prisma.job.findFirst({ where: { id: jobId } });
+
+  // return await Job.findById(jobId).lean();
 }
 
 async function listJobs() {
 
-  return await Job.find().lean();
+  return await prisma.job.findMany();
+
+  // return await Job.find().lean();
 
 }
 
@@ -16,26 +25,35 @@ async function deleteJob(id: string) {
 }
 
 async function createJob(
-  companyId: string,
   companyName: string,
+  companyId: string,
   title: string,
   seniority: string,
-  description: object,
-  wage: string,
+  description: string,
+  benefits: string,
+  requirements: string,
+  wage: number,
   contact: string,
-  startDeadLine: Date,
+  startDeadLine: string
 ) {
 
-  return await Job.create({
-    companyId,
-    companyName,
-    title,
-    seniority,
-    description,
-    wage,
-    contact,
-    startDeadLine,
+  return await prisma.job.create({
+    data: {
+      companyName, companyId, title, seniority, description, benefits, requirements, wage, contact, startDeadLine
+    }
   });
+
+
+  // return await Job.create({
+  //   companyId,
+  //   companyName,
+  //   title,
+  //   seniority,
+  //   description,
+  //   wage,
+  //   contact,
+  //   startDeadLine,
+  // });
 
 }
 

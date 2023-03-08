@@ -1,6 +1,6 @@
 import * as repository from '../useCases/job';
 import * as userRepository from '../useCases/user';
-
+import * as jobRepository from '../repository/job';
 import { recoverUserFromToken } from '../useCases/token/recoverUserFromToken';
 
 import sleep from '../utils/sleep';
@@ -14,7 +14,7 @@ class JobController {
     await sleep(1000);
 
     try {
-      const jobs = await repository.listJobs();
+      const jobs = await jobRepository.listJobs();
 
       if (request?.headers?.authentication) {
         const userDataFromToken = recoverUserFromToken(request.headers['authorization']);
@@ -49,7 +49,9 @@ class JobController {
   }
 
   async createJob(request: any, response: any) {
-    const { companyName, title, seniority, description, wage, contact, startDeadLine } = request.body;
+    const { companyName, title, seniority,
+      description, benefits, requirements,
+      wage, contact, startDeadLine } = request.body;
 
     await sleep(1500);
 
@@ -65,9 +67,8 @@ class JobController {
 
       const userDataFromToken = recoverUserFromToken(request.headers['authorization']);
 
-      const jobCreated = await repository.createJob(
-        userDataFromToken.id,
-        companyName, title, seniority, description, wage, contact, startDeadLine
+      const jobCreated = await jobRepository.createJob(
+        companyName, userDataFromToken.id, title, seniority, description, benefits, requirements, wage, contact, startDeadLine
       );
 
       return response.status(201).send(jobCreated);
@@ -199,15 +200,9 @@ class JobController {
 
     try {
 
-      console.log(request.query);
-
       const { jobId } = request.query;
 
-      console.log('jobId', jobId);
-
-      const jobDetails = await repository.listJob(jobId);
-
-      console.log('jobDetails', jobDetails);
+      const jobDetails = await jobRepository.listJob(jobId);
 
       return response.status(200).json(jobDetails);
 

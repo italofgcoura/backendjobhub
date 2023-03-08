@@ -30,11 +30,11 @@ class UserController {
     try {
       const userDataFromToken = recoverUserFromToken(request.headers['authorization']);
 
-      const user = await repository.listUserById(userDataFromToken.id);
+      const user = await userRepository.listUserById(userDataFromToken.id);
 
       if (user) {
         return response.json({
-          userId: user._id,
+          userId: user.id,
           userEmail: user.email,
         });
       }
@@ -145,9 +145,14 @@ class UserController {
 
     try {
 
-      const updatedDataCreated = await repository.updateUserData(userDataFromToken.id, name, email, address, isCompany, isAdmin, userDescription, userTechnologies, cnpj,
-
-      );
+      const updatedDataCreated =
+        await userRepository.updateUserData(userDataFromToken.id,
+          name,
+          email,
+          isCompany,
+          isAdmin,
+          userDescription
+        );
 
 
       return response.status(200).json(updatedDataCreated);

@@ -1,6 +1,6 @@
 import * as admin from 'firebase-admin';
 
-export default (token: any, req: any, res: any, next: any) => {
+export default (req: any, res: any, next: any) => {
 
   const authHeader = req.headers.authorization;
 

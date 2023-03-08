@@ -29,6 +29,30 @@ async function listUserData(userId: string) {
   return await prisma.user.findFirst({ where: { id: userId } });
 }
 
+async function updateUserData(
+  id: string,
+  name: string,
+  email: string,
+  isCompany: boolean,
+  isAdmin?: boolean,
+  description?: string,
+) {
+  const res = await prisma.user.update({
+    where: { id: id },
+    data: {
+      id, name, email, isCompany, isAdmin, description
+    }
+  }
+  );
+  return res;
+}
+
+async function listUserById(id: string) {
+
+  return await prisma.user.findFirst({ where: { id: id } });
+
+}
+
 
 // async function listUser(email: string, password: string) {
 //   return await UserLogin.findOne({ email, password });
@@ -51,11 +75,7 @@ async function listUserData(userId: string) {
 
 // }
 
-// async function listUserById(id: string) {
 
-//   return await UserLogin.findById(id);
-
-// }
 
 // async function createUser(email: string, password: string) {
 
@@ -88,26 +108,7 @@ async function listUserData(userId: string) {
 //     { _id }, { email, password }); return res;
 // }
 
-// async function updateUserData(
-//   userId: string,
-//   name: string,
-//   email: string,
-//   address: object,
-//   isCompany: boolean,
-//   isAdmin: boolean,
-//   userDescription: string,
-//   userTechnologies: object[],
-//   cnpj: string
-// ) {
-//   const res = await UserData.updateOne(
-//     { userId },
-//     {
-//       userId, name, email, address, isAdmin, isCompany, userDescription,
-//       userTechnologies, cnpj
-//     }
-//   );
-//   return res;
-// }
+
 
 // async function listUserData(userId: string) {
 //   return await UserData.findOne({ userId }).lean();
@@ -130,7 +131,8 @@ async function listUserData(userId: string) {
 // }
 
 export {
-  listUserByEmail, createUserData, listUserData
+  listUserByEmail, createUserData, listUserData,
+  updateUserData, listUserById
   //  listUsers, createUser, listUserById, listUser,
   //  listUserData, deleteAll, updateUserData, updateUser,
   // deleteUser, addAppliedJob, listUserAppliedJobs

@@ -18,33 +18,46 @@ export const router = Router();
 // router.get('/token/refresh-token', TokenController.refreshToken);
 
 // user routes
-router.get('/users', UserController.listUsers);
-router.get('/user', jwtVerify, UserController.listUser);
-router.post('/new-user', UserController.createUser);
-router.patch('/user', jwtVerify, UserController.updateUser);
-router.post('/user-data', jwtVerify, UserController.createUserData);
 router.get('/user-data', jwtVerify, UserController.listUserData);
 router.patch('/user-data', jwtVerify, UserController.updateUserData);
-router.delete('/user', UserController.deleteUser);
+router.post('/new-user', UserController.createUser);
+router.get('/user', jwtVerify, UserController.listUser);
+
+
+
+// router.patch('/user', jwtVerify, UserController.updateUser);
+
+// router.get('/users', UserController.listUsers);
+
+// router.post('/user-data', jwtVerify, UserController.createUserData);
+
+// router.delete('/user', UserController.deleteUser);
 // user only for development purpose
 // router.delete('/user-data', jwtVerify, UserController.deleteAll);
 
 // notifications routes
-router.get('/notifications', jwtVerify, NotificationController.listUserNotifications);
-router.get('/notifications/all', jwtVerify, NotificationController.listAllNotifications);
-router.post('/notification', jwtVerify, NotificationController.createNotification);
-router.delete('/notifications', jwtVerify, NotificationController.deleteAll);
+// router.get('/notifications', jwtVerify, NotificationController.listUserNotifications);
+// router.get('/notifications/all', jwtVerify, NotificationController.listAllNotifications);
+// router.post('/notification', jwtVerify, NotificationController.createNotification);
+// router.delete('/notifications', jwtVerify, NotificationController.deleteAll);
 
 
 // category routes
-router.post('/category', jwtVerify, CategoryController.createCategory);
-router.get('/categories', jwtVerify, CategoryController.listCategories);
-router.delete('/category', jwtVerify, CategoryController.deleteCategory);
+// router.post('/category', jwtVerify, CategoryController.createCategory);
+// router.get('/categories', jwtVerify, CategoryController.listCategories);
+// router.delete('/category', jwtVerify, CategoryController.deleteCategory);
 
 
 // job routes
-router.post('/job', jwtVerify, JobController.createJob);
 router.get('/jobs', JobController.listJobs);
+router.post('/job', jwtVerify, JobController.createJob);
+
+
+
+
+
+
+
 router.delete('/job', jwtVerify, JobController.deleteJob);
 router.patch('/apply', jwtVerify, JobController.updateJob);
 router.get('/user-applied-jobs', jwtVerify, JobController.listUserAppliedJobs);
