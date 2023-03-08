@@ -4,7 +4,7 @@ import * as userRepository from '../useCases/user';
 import { recoverUserFromToken } from '../useCases/token/recoverUserFromToken';
 
 import sleep from '../utils/sleep';
-import { IJob, IJobs } from '../interfaces/jobInterfaces';
+// import { IJob, IJobs } from '../interfaces/jobInterfaces';
 import { IUserData } from '../interfaces/userInterfaces';
 
 class JobController {
@@ -241,10 +241,7 @@ class JobController {
         for (const candidate of job.candidates) {
           const temp = await userRepository.listUserData(candidate);
 
-          if (temp) {
-            users.push(temp);
-
-          }
+          if (temp) { users.push(temp); }
         }
 
         return response.status(200).json(users);

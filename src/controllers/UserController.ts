@@ -1,5 +1,7 @@
 import * as repository from '../useCases/user';
 
+import * as userRepository from '../repository/user';
+
 import { recoverUserFromToken } from '../useCases/token/recoverUserFromToken';
 
 import generateToken from '../useCases/token/generateToken';
@@ -65,7 +67,7 @@ class UserController {
 
       // const userCreatedId = userCreated._id.toString();
 
-      await repository.createUserData(userId, name, email, isCompany || false);
+      await userRepository.createUserData(userId, name, email, isCompany || false);
 
       // generateToken({ _id: userId }, response);
 
@@ -164,19 +166,13 @@ class UserController {
     console.log('userDataFromToken', userDataFromToken);
 
     try {
-      const userData = await repository.listUserData(userDataFromToken.id);
+      const userData = await userRepository.listUserData(userDataFromToken.id);
 
       const userObject = {
-        address: {
-          ...userData?.address
-        },
         name: userData?.name,
-        cnpj: userData?.cnpj,
         isAdmin: userData?.isAdmin,
         isCompany: userData?.isCompany,
-        userId: userData?.userId,
-        userDescription: userData?.userDescription,
-        userTechnologies: userData?.isCompany ? [] : userData?.userTechnologies,
+        userDescription: userData?.description,
         email: userData?.email
       };
 

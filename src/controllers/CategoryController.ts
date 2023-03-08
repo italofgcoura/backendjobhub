@@ -17,8 +17,6 @@ async function notAdmin(request: any) {
 
 class CagegoryController {
 
-
-
   async listCategories(request: any, response: any) {
 
     try {
