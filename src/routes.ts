@@ -51,16 +51,17 @@ router.get('/user', jwtVerify, UserController.listUser);
 // job routes
 router.get('/jobs', JobController.listJobs);
 router.post('/job', jwtVerify, JobController.createJob);
-
-
-
-
+router.get('/job-details', JobController.listJobDetails);
+router.post('/apply', jwtVerify, JobController.applyForJob);
+router.get('/company-registered-jobs', jwtVerify, JobController.listCompanyRegisteredJobs);
+router.get('/user-applied-jobs', jwtVerify, JobController.listUserAppliedJobs);
+router.get('/users-by-job', jwtVerify, JobController.listUsersByJob);
 
 
 
 router.delete('/job', jwtVerify, JobController.deleteJob);
-router.patch('/apply', jwtVerify, JobController.updateJob);
-router.get('/user-applied-jobs', jwtVerify, JobController.listUserAppliedJobs);
-router.get('/company-registered-jobs', jwtVerify, JobController.listCompanyRegisteredJobs);
-router.get('/users-by-job', jwtVerify, JobController.listUsersByJob);
-router.get('/job-details', JobController.listJobDetails);
+
+
+
+
+

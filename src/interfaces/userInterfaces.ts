@@ -4,19 +4,12 @@ interface IUserTechnologie {
 }
 
 interface IUserData {
+  id: string,
   name: string,
   email: string,
   isCompany: boolean,
-  userId: string,
-  userTechnologies?: IUserTechnologie[],
-  cnpj?: string,
-  address?: {
-    street?: string,
-    number?: string,
-    city?: string,
-  },
-  isAdmin?: boolean,
-  userDescription?: string,
+  isAdmin?: boolean | null,
+  description?: string | null,
 }
 
 

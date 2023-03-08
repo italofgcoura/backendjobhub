@@ -79,7 +79,7 @@ class JobController {
     }
   }
 
-  async updateJob(request: any, response: any) {
+  async applyForJob(request: any, response: any) {
     const { jobId } = request.body;
 
     await sleep(2000);
@@ -92,105 +92,15 @@ class JobController {
 
       const userDataFromToken: any = recoverUserFromToken(request.headers['authorization']);
 
-      const jobRecovered = await repository.listJob(jobId);
+      const applied = jobRepository.applyForJob(
+        jobId, userDataFromToken.id
+      );
 
-      if (jobRecovered) {
-
-        const jobToUpdate = jobRecovered.candidates ?
-          { ...jobRecovered, candidates: [...jobRecovered.candidates, userDataFromToken.id] }
-          :
-          { ...jobRecovered, candidates: [userDataFromToken.id] };
-
-        const jobUpdated = await repository.updateJob(jobId,
-          jobToUpdate
-        );
-
-        // await userRepository.addAppliedJob(userDataFromToken.id, jobId);
-
-        return response.status(200).send(jobUpdated);
-
-      }
-
-      return response.status(400).json({ error: 'Vaga não encontrada' });
+      return response.status(200).json({ meg: 'Candidatado com sucesso', applied });
 
     } catch (error) {
       console.log(error);
       return response.status(500).json(error);
-    }
-  }
-
-  async deleteJob(req, res) {
-
-    const { id } = req.params;
-
-    const deleted = await repository.deleteJob(id);
-
-    if (deleted.acknowledged) {
-      return res.sendStatus(204);
-    }
-
-    return res.sendStatus(500);
-
-  }
-
-  // list jobs that user applied
-  async listUserAppliedJobs(request, response) {
-
-    await sleep(1500);
-
-    try {
-      const userDataFromToken: any = recoverUserFromToken(request.headers['authorization']);
-
-      const userJobs = await repository.listUserJobs(userDataFromToken.id);
-
-      // interface iJob {
-      //   candidates: string[];
-      //   companyName?: string | undefined;
-      //   companyId?: string | undefined;
-      //   title?: string | undefined;
-      //   seniority?: string | undefined;
-      //   description?: any;
-      //   wage?: number | undefined;
-      //   contact?: string | undefined;
-      //   startDeadLine?: string | undefined;
-      // }
-
-      // // recover list of applied id jobs
-      // const appliedUserJobsIds = await userRepository.listUserAppliedJobs(userDataFromToken.id);
-
-      // const userJobs: iJob[] = [];
-
-
-
-      // // recover each job informations
-      // if (appliedUserJobsIds) {
-      //   appliedUserJobsIds.applicationJobsId.forEach(async (item) => {
-
-      //     const temp = await repository.listJob(item);
-      //     if (temp) {
-      //       userJobs.push(temp);
-      //     }
-      //   });
-      // }
-
-      return response.status(200).json(userJobs);
-
-    }
-    catch (error) {
-      return response.status(500).json({ error: error });
-    }
-  }
-
-  // list all jobs registered by the company
-  async listCompanyRegisteredJobs(request, response) {
-    try {
-      const userDataFromToken: any = recoverUserFromToken(request.headers['authorization']);
-
-      const jobs = await repository.listCompanyJobs(userDataFromToken.id);
-
-      return response.status(201).json(jobs);
-    } catch (error) {
-      return response.status(500);
     }
   }
 
@@ -209,46 +119,96 @@ class JobController {
     } catch (error) { return response.status(500).json(error); }
   }
 
+  // list jobs that user applied
+  async listUserAppliedJobs(request, response) {
+
+    await sleep(1500);
+
+    try {
+      const userDataFromToken: any = recoverUserFromToken(request.headers['authorization']);
+
+      const userJobs = await jobRepository.listUserJobs(userDataFromToken.id);
+
+      return response.status(200).json(userJobs);
+
+    }
+    catch (error) {
+      return response.status(500).json({ error: error });
+    }
+  }
+
+  // list all jobs registered by the company
+  async listCompanyRegisteredJobs(request, response) {
+    try {
+      const userDataFromToken: any = recoverUserFromToken(request.headers['authorization']);
+
+      const jobs = await jobRepository.listCompanyJobs(userDataFromToken.id);
+
+      return response.status(201).json(jobs);
+    } catch (error) {
+      return response.status(500);
+    }
+  }
+
   // list all users that applied for a job
   async listUsersByJob(request, response) {
     try {
 
       const { jobId } = request.query;
 
+      const applications = await jobRepository.listApplications(jobId);
+
+      // if (applications) {
+      const users = await jobRepository.listUsersByApplication(applications);
+
+      return response.status(200).json(users);
+      // }
 
 
-      const job = await repository.listJob(jobId);
 
+      // const users: IUserData[] = [];
 
+      // if (job) {
 
-      const users: IUserData[] = [];
+      //   for (const candidate of job.candidates) {
+      //     const temp = await userRepository.listUserData(candidate);
 
-      if (job) {
-        // job.candidates.forEach(async (candidate) => {
-        //   const temp = await userRepository.listUserData(candidate);
+      //     if (temp) { users.push(temp); }
+      //   }
 
-        //   if (temp) {
-        //     users.push(temp);
+      //   return response.status(200).json(users);
+      // }
 
-        //   }
-        // });
-
-        for (const candidate of job.candidates) {
-          const temp = await userRepository.listUserData(candidate);
-
-          if (temp) { users.push(temp); }
-        }
-
-        return response.status(200).json(users);
-      }
-
-      return response.status(204);
+      // return response.status(204);
 
     } catch (error) {
 
       return response.status(500).json(error);
     }
   }
+
+
+
+
+
+
+
+  async deleteJob(req, res) {
+
+    const { id } = req.params;
+
+    const deleted = await repository.deleteJob(id);
+
+    if (deleted.acknowledged) {
+      return res.sendStatus(204);
+    }
+
+    return res.sendStatus(500);
+
+  }
+
+
+
 }
 
 export default new JobController();

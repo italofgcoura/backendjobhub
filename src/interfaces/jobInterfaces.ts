@@ -1,11 +1,10 @@
 interface IJob {
-  candidates: string[];
   companyName?: string | undefined;
   companyId?: string | undefined;
   title?: string | undefined;
   seniority?: string | undefined;
   description?: string;
-  wage?: string | undefined;
+  wage?: number | undefined;
   contact?: string | undefined;
   startDeadLine?: string | undefined;
 }

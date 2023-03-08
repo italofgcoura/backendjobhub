@@ -173,6 +173,8 @@ class UserController {
     try {
       const userData = await userRepository.listUserData(userDataFromToken.id);
 
+      console.log('userData', userData);
+
       const userObject = {
         name: userData?.name,
         isAdmin: userData?.isAdmin,

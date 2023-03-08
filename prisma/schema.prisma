@@ -24,7 +24,7 @@ model User {
 
 model Job {
   id            String   @id @default(cuid())
-  createdAt  DateTime   @default(now())
+  createdAt     DateTime @default(now())
   companyName   String
   companyId     String
   title         String
@@ -47,5 +47,5 @@ model Application {
   jobId         String
   answer        String?
   user          User    @relation(fields: [userId], references: [id])
-  pool          Job     @relation(fields: [jobId], references: [id])
+  job           Job     @relation(fields: [jobId], references: [id])
 }

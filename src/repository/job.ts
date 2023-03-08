@@ -1,4 +1,6 @@
 import { PrismaClient } from '@prisma/client';
+import { IJob } from '../interfaces/jobInterfaces';
+import { IUserData } from '../interfaces/userInterfaces';
 
 const prisma = new PrismaClient();
 
@@ -9,14 +11,11 @@ async function listJob(jobId: string) {
 
   return await prisma.job.findFirst({ where: { id: jobId } });
 
-  // return await Job.findById(jobId).lean();
 }
 
 async function listJobs() {
 
   return await prisma.job.findMany();
-
-  // return await Job.find().lean();
 
 }
 
@@ -43,58 +42,84 @@ async function createJob(
     }
   });
 
-
-  // return await Job.create({
-  //   companyId,
-  //   companyName,
-  //   title,
-  //   seniority,
-  //   description,
-  //   wage,
-  //   contact,
-  //   startDeadLine,
-  // });
-
 }
 
 
 
-async function updateJob(
+async function applyForJob(
   jobId: string,
-  jobToUpdate: any
+  userId: string
 ) {
-  const res = await Job.updateOne(
-    { _id: jobId },
-    jobToUpdate
-  );
-  console.log('res', res);
-  return res;
+  return await prisma.application.create({
+    data: { userId, jobId }
+  });
 }
 
 async function listUserJobs(userId: string) {
-  const res = await Job.find(
-    { candidates: { $in: [userId] } },
-  );
 
-  return res;
+  const applied = await prisma.application.findMany({ where: { userId: userId } });
+
+  if (!applied) { return []; }
+
+  const jobs: IJob[] = [];
+
+  for (const item of applied) {
+
+    const temp = await prisma.job.findFirst({ where: { id: item.jobId } });
+    if (temp) {
+      jobs.push(temp);
+    }
+  }
+
+  return jobs;
+
 }
 
 async function listCompanyJobs(userId: string) {
   await sleep(1500);
-  const res = await Job.find(
-    { companyId: { $in: [userId] } },
-  );
 
-  return res;
+  return await prisma.job.findMany({
+    where: {
+      companyId: userId
+    }
+  });
+
 }
 
+async function listUsersByApplication(applications: any) {
+
+  const user: IUserData[] = [];
+
+  for (const item of applications) {
+    const temp = await prisma.user.findFirst({ where: { id: item.userId } });
+    if (temp) {
+      user.push(temp);
+    }
+
+  }
+
+  return user;
+
+}
+
+async function listApplications(jobId: string) {
+
+  return await prisma.application.findMany({
+    where: {
+      jobId: jobId
+    }
+  });
+
+}
 
 export {
   createJob,
   listJobs,
   deleteJob,
   listJob,
-  updateJob,
+  applyForJob,
   listUserJobs,
-  listCompanyJobs
+  listCompanyJobs,
+  listApplications,
+  listUsersByApplication
 };
