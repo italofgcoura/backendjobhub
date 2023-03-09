@@ -61,13 +61,13 @@ async function listUserJobs(userId: string) {
 
   if (!applied) { return []; }
 
-  const jobs: IJob[] = [];
+  const jobs: any[] = [];
 
   for (const item of applied) {
 
     const temp = await prisma.job.findFirst({ where: { id: item.jobId } });
     if (temp) {
-      jobs.push(temp);
+      jobs.push({ ...temp, applicationId: item.applicationId, companyRepply: item.answer, applied: true });
     }
   }
 
@@ -121,6 +121,28 @@ async function listApplicationsAndUser(jobId: string, userId: string) {
   });
 }
 
+async function repplySingleJobApplications(applicationId: string, applicationReply: string) {
+  return await prisma.application.update({
+    where: {
+      applicationId: applicationId
+    },
+    data: { answer: applicationReply }
+  });
+}
+
+async function repplyAllJobApplications(jobId: string, applicationReply: string) {
+  return await prisma.application.updateMany({
+    where: {
+      AND: [
+        { jobId: jobId },
+        { answer: null }
+      ]
+
+    },
+    data: { answer: applicationReply }
+  });
+}
+
 export {
   createJob,
   listJobs,
@@ -131,5 +153,7 @@ export {
   listCompanyJobs,
   listApplications,
   listUsersByApplication,
-  listApplicationsAndUser
+  listApplicationsAndUser,
+  repplyAllJobApplications,
+  repplySingleJobApplications
 };

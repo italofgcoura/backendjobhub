@@ -22,22 +22,31 @@ class JobController {
       if (request?.headers?.authorization) {
         const userDataFromToken = recoverUserFromToken(request.headers['authorization']);
 
+        const tempJobs: any = [];
+
         for (const item of jobs) {
 
           const temp = await jobRepository.listApplicationsAndUser(item.id, userDataFromToken.id);
 
           if (temp) {
-            item.applied = true;
+
+            tempJobs.push({
+              ...item,
+              applicationId: temp.applicationId, companyRepply: temp.answer, applied: true
+            });
           }
           else {
-            item.applied = false;
+            tempJobs.push({
+              ...item,
+              applied: false
+            });
           }
 
         }
 
         console.log('returnedJobs', jobs);
 
-        return response.status(200).send(jobs);
+        return response.status(200).send(tempJobs);
       }
 
 
@@ -133,7 +142,7 @@ class JobController {
             jobDetails.applied = false;
           }
 
-          return response.status(200).send(jobDetails);
+          return response.status(200).send({ ...jobDetails, applicationId: temp?.applicationId, companyRepply: temp?.answer });
         }
       }
 
@@ -167,14 +176,12 @@ class JobController {
 
       const jobs = await jobRepository.listCompanyJobs(userDataFromToken.id);
 
-
       if (jobs) {
 
         const tempJobs: any[] = [];
 
         for (const job of jobs) {
           const temp = await jobRepository.listApplications(job.id);
-
 
           if (temp) {
             tempJobs.push({ ...job, numberOfCandidates: temp.length });
@@ -202,28 +209,9 @@ class JobController {
 
       const applications = await jobRepository.listApplications(jobId);
 
-      // if (applications) {
       const users = await jobRepository.listUsersByApplication(applications);
 
       return response.status(200).json(users);
-      // }
-
-
-
-      // const users: IUserData[] = [];
-
-      // if (job) {
-
-      //   for (const candidate of job.candidates) {
-      //     const temp = await userRepository.listUserData(candidate);
-
-      //     if (temp) { users.push(temp); }
-      //   }
-
-      //   return response.status(200).json(users);
-      // }
-
-      // return response.status(204);
 
     } catch (error) {
 
@@ -231,8 +219,45 @@ class JobController {
     }
   }
 
+  async repplySingleApplication(request, response) {
 
+    const { applicationId, applicationReply } = request.body;
 
+    if (!applicationId || !applicationReply) {
+      return response.status(400).json({ msg: 'Missing required field.' });
+    }
+
+    try {
+
+      const applicationUpdated = await jobRepository.repplySingleJobApplications(applicationId, applicationReply);
+
+      return response.status(200).json({ msg: applicationUpdated });
+
+    } catch (error) {
+      console.log(error);
+      return response.status(500).json({ error });
+    }
+  }
+
+  async repplyAllJobApplications(request, response) {
+
+    const { jobId, applicationReply } = request.body;
+
+    if (!jobId || !applicationReply) {
+      return response.status(400).json({ msg: 'Missing required field.' });
+    }
+
+    try {
+
+      const applicationUpdated = await jobRepository.repplyAllJobApplications(jobId, applicationReply);
+
+      return response.status(200).json({ msg: applicationUpdated });
+
+    } catch (error) {
+      console.log(error);
+      return response.status(500).json({ error });
+    }
+  }
 
 
 

@@ -1,4 +1,4 @@
-import { databaseConnect } from './config/database';
+// import { databaseConnect } from './config/database';
 
 import express from 'express';
 
@@ -16,7 +16,7 @@ admin.initializeApp({
 });
 
 
-databaseConnect();
+// databaseConnect();
 
 const app = express();
 
