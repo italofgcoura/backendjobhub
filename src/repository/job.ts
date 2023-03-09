@@ -103,13 +103,22 @@ async function listUsersByApplication(applications: any) {
 }
 
 async function listApplications(jobId: string) {
-
   return await prisma.application.findMany({
     where: {
       jobId: jobId
     }
   });
+}
 
+async function listApplicationsAndUser(jobId: string, userId: string) {
+  return await prisma.application.findFirst({
+    where: {
+      AND: [
+        { jobId: jobId },
+        { userId: userId }
+      ]
+    }
+  });
 }
 
 export {
@@ -121,5 +130,6 @@ export {
   listUserJobs,
   listCompanyJobs,
   listApplications,
-  listUsersByApplication
+  listUsersByApplication,
+  listApplicationsAndUser
 };

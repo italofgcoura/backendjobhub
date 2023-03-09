@@ -35,6 +35,7 @@ model Job {
   wage          Int
   contact       String
   startDeadLine String
+  applied       Boolean?
 
   user User @relation(fields: [companyId], references: [id])
 

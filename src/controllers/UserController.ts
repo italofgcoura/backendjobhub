@@ -50,8 +50,6 @@ class UserController {
   async createUser(request: any, response: any) {
     const { userId, email, password, name, isCompany } = request.body;
 
-    console.log(userId, email, password, name, isCompany);
-
     if (!userId || !name) {
       return response.status(400).send({ error: 'Missing required field' });
     }
@@ -135,8 +133,6 @@ class UserController {
   async updateUserData(request, response) {
     const { name, address, isCompany, isAdmin, userDescription, userTechnologies, cnpj, email } = request.body;
 
-    console.log(name, address, isCompany, isAdmin, userDescription, userTechnologies, cnpj, email);
-
     if (!name) {
       return response.status(400).json({ error: 'Name is required.' });
     }
@@ -168,12 +164,8 @@ class UserController {
 
     const userDataFromToken = recoverUserFromToken(request.headers['authorization']);
 
-    console.log('userDataFromToken', userDataFromToken);
-
     try {
       const userData = await userRepository.listUserData(userDataFromToken.id);
-
-      console.log('userData', userData);
 
       const userObject = {
         name: userData?.name,

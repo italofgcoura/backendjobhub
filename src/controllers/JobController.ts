@@ -19,24 +19,25 @@ class JobController {
     try {
       const jobs = await jobRepository.listJobs();
 
-      if (request?.headers?.authentication) {
+      if (request?.headers?.authorization) {
         const userDataFromToken = recoverUserFromToken(request.headers['authorization']);
 
-        const returnedJobs = jobs.map((item: any) => {
+        for (const item of jobs) {
 
-          item.applied = false;
+          const temp = await jobRepository.listApplicationsAndUser(item.id, userDataFromToken.id);
 
-          if (item.candidates) {
-            if ((item.candidates?.findIndex((i: string) => i === userDataFromToken.id)) !== -1) {
-              item.applied = true;
-            }
+          if (temp) {
+            item.applied = true;
+          }
+          else {
+            item.applied = false;
           }
 
-          return item;
+        }
 
-        });
+        console.log('returnedJobs', jobs);
 
-        return response.status(200).send(returnedJobs);
+        return response.status(200).send(jobs);
       }
 
 
@@ -117,6 +118,25 @@ class JobController {
 
       const jobDetails = await jobRepository.listJob(jobId);
 
+
+      if (jobDetails) {
+
+        if (request?.headers?.authorization) {
+          const userDataFromToken = recoverUserFromToken(request.headers['authorization']);
+
+          const temp = await jobRepository.listApplicationsAndUser(jobDetails?.id, userDataFromToken.id);
+
+          if (temp) {
+            jobDetails.applied = true;
+          }
+          else {
+            jobDetails.applied = false;
+          }
+
+          return response.status(200).send(jobDetails);
+        }
+      }
+
       return response.status(200).json(jobDetails);
 
     } catch (error) { return response.status(500).json(error); }
@@ -147,7 +167,6 @@ class JobController {
 
       const jobs = await jobRepository.listCompanyJobs(userDataFromToken.id);
 
-      console.log('jobs', jobs);
 
       if (jobs) {
 
@@ -156,7 +175,6 @@ class JobController {
         for (const job of jobs) {
           const temp = await jobRepository.listApplications(job.id);
 
-          console.log('temp', temp);
 
           if (temp) {
             tempJobs.push({ ...job, numberOfCandidates: temp.length });
