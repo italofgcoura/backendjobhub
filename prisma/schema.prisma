@@ -16,7 +16,7 @@ model User {
   email       String   @unique
   isCompany   Boolean
   isAdmin     Boolean?
-  description String?
+  description String?  @db.VarChar(500)
 
   Job         Job[]
   Application Application[]
@@ -29,9 +29,9 @@ model Job {
   companyId     String
   title         String
   seniority     String
-  description   String
-  benefits      String
-  requirements  String
+  description   String   @db.VarChar(500)
+  benefits      String   @db.VarChar(500)
+  requirements  String   @db.VarChar(500)
   wage          Int
   contact       String
   startDeadLine String

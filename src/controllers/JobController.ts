@@ -6,9 +6,12 @@ import { recoverUserFromToken } from '../useCases/token/recoverUserFromToken';
 import sleep from '../utils/sleep';
 // import { IJob, IJobs } from '../interfaces/jobInterfaces';
 import { IUserData } from '../interfaces/userInterfaces';
+import { IJob } from '../interfaces/jobInterfaces';
 
 class JobController {
 
+  // list all jobs. If the user is logged in return also if the user applied
+  // for the job or not
   async listJobs(request: any, response: any) {
 
     await sleep(1000);
@@ -144,7 +147,30 @@ class JobController {
 
       const jobs = await jobRepository.listCompanyJobs(userDataFromToken.id);
 
-      return response.status(201).json(jobs);
+      console.log('jobs', jobs);
+
+      if (jobs) {
+
+        const tempJobs: any[] = [];
+
+        for (const job of jobs) {
+          const temp = await jobRepository.listApplications(job.id);
+
+          console.log('temp', temp);
+
+          if (temp) {
+            tempJobs.push({ ...job, numberOfCandidates: temp.length });
+          } else {
+            tempJobs.push({ ...job, numberOfCandidates: 0 });
+          }
+
+        }
+
+        return response.status(200).json(tempJobs);
+
+      }
+
+      return response.status(200).json(jobs);
     } catch (error) {
       return response.status(500);
     }
