@@ -38,7 +38,8 @@ async function createJob(
 
   return await prisma.job.create({
     data: {
-      companyName, companyId, title, seniority, description, benefits, requirements, wage, contact, startDeadLine
+      companyName, companyId, title, seniority, description,
+      benefits, requirements, wage, contact, startDeadLine
     }
   });
 
@@ -88,12 +89,12 @@ async function listCompanyJobs(userId: string) {
 
 async function listUsersByApplication(applications: any) {
 
-  const user: IUserData[] = [];
+  const user: any[] = [];
 
   for (const item of applications) {
     const temp = await prisma.user.findFirst({ where: { id: item.userId } });
     if (temp) {
-      user.push(temp);
+      user.push({ ...temp, applicationId: item.applicationId });
     }
 
   }
@@ -137,7 +138,6 @@ async function repplyAllJobApplications(jobId: string, applicationReply: string)
         { jobId: jobId },
         { answer: null }
       ]
-
     },
     data: { answer: applicationReply }
   });
