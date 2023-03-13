@@ -36,7 +36,7 @@ router.get('/user', jwtVerify, UserController.listUser);
 // router.delete('/user-data', jwtVerify, UserController.deleteAll);
 
 // notifications routes
-// router.get('/notifications', jwtVerify, NotificationController.listUserNotifications);
+router.get('/notifications', jwtVerify, NotificationController.listUserNotifications);
 // router.get('/notifications/all', jwtVerify, NotificationController.listAllNotifications);
 // router.post('/notification', jwtVerify, NotificationController.createNotification);
 // router.delete('/notifications', jwtVerify, NotificationController.deleteAll);
@@ -61,7 +61,7 @@ router.get('/users-by-job', jwtVerify, JobController.listUsersByJob);
 
 
 
-router.delete('/job', jwtVerify, JobController.deleteJob);
+// router.delete('/job', jwtVerify, JobController.deleteJob);
 
 
 

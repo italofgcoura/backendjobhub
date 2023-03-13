@@ -1,10 +1,10 @@
 import { PrismaClient } from '@prisma/client';
-import { IJob } from '../interfaces/jobInterfaces';
-import { IUserData } from '../interfaces/userInterfaces';
+// import { IJob } from '../interfaces/jobInterfaces';
+// import { IUserData } from '../interfaces/userInterfaces';
 
 const prisma = new PrismaClient();
 
-import { Job } from '../models/Job';
+// import { Job } from '../models/Job';
 import sleep from '../utils/sleep';
 
 async function listJob(jobId: string) {
@@ -19,9 +19,9 @@ async function listJobs() {
 
 }
 
-async function deleteJob(id: string) {
-  return await Job.deleteOne({ id });
-}
+// async function deleteJob(id: string) {
+//   return await Job.deleteOne({ id });
+// }
 
 async function createJob(
   companyName: string,
@@ -146,7 +146,6 @@ async function repplyAllJobApplications(jobId: string, applicationReply: string)
 export {
   createJob,
   listJobs,
-  deleteJob,
   listJob,
   applyForJob,
   listUserJobs,

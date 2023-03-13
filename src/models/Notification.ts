@@ -1,16 +1,20 @@
 import { Schema, model } from 'mongoose';
 
 export const Notification = model('Notification', new Schema({
-  type: {
+  userId: {
     type: String,
     required: true
   },
-  text: {
-    type: String,
-    required: true
-  },
-  userType: {
+  jobId: {
     type: Array,
     required: true
-  }
+  },
+  visualized: {
+    type: Array,
+    required: true
+  },
+  notificationText: {
+    type: Array,
+    required: true
+  },
 }));

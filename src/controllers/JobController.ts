@@ -1,12 +1,8 @@
-import * as repository from '../useCases/job';
-import * as userRepository from '../useCases/user';
 import * as jobRepository from '../repository/job';
+import NotificationController from './NotificationController';
 import { recoverUserFromToken } from '../useCases/token/recoverUserFromToken';
 
 import sleep from '../utils/sleep';
-// import { IJob, IJobs } from '../interfaces/jobInterfaces';
-import { IUserData } from '../interfaces/userInterfaces';
-import { IJob } from '../interfaces/jobInterfaces';
 
 class JobController {
 
@@ -43,8 +39,6 @@ class JobController {
           }
 
         }
-
-        console.log('returnedJobs', jobs);
 
         return response.status(200).send(tempJobs);
       }
@@ -211,7 +205,7 @@ class JobController {
 
       const users = await jobRepository.listUsersByApplication(applications);
 
-      return response.status(200).json(users);
+      return response.status(200).json({ users: users, jobId: jobId });
 
     } catch (error) {
 
@@ -221,15 +215,23 @@ class JobController {
 
   async repplySingleApplication(request, response) {
 
-    const { applicationId, applicationReply } = request.body;
+    const { applicationId, applicationReply, selectedJobId, userId } = request.body;
 
-    if (!applicationId || !applicationReply) {
+    if (!applicationId || !applicationReply || !selectedJobId) {
       return response.status(400).json({ msg: 'Missing required field.' });
     }
 
     try {
 
       const applicationUpdated = await jobRepository.repplySingleJobApplications(applicationId, applicationReply);
+
+      if (userId) {
+        const text = 'Texto de teste de notificação';
+
+        const newNotification = await NotificationController.createNotification(userId, selectedJobId, false, text);
+
+        console.log('newNotification', newNotification);
+      }
 
       return response.status(200).json({ msg: applicationUpdated });
 
@@ -262,19 +264,19 @@ class JobController {
 
 
 
-  async deleteJob(req, res) {
+  // async deleteJob(req, res) {
 
-    const { id } = req.params;
+  //   const { id } = req.params;
 
-    const deleted = await repository.deleteJob(id);
+  //   const deleted = await repository.deleteJob(id);
 
-    if (deleted.acknowledged) {
-      return res.sendStatus(204);
-    }
+  //   if (deleted.acknowledged) {
+  //     return res.sendStatus(204);
+  //   }
 
-    return res.sendStatus(500);
+  //   return res.sendStatus(500);
 
-  }
+  // }
 
 
 

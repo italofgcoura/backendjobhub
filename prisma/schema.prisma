@@ -18,8 +18,9 @@ model User {
   isAdmin     Boolean?
   description String?  @db.VarChar(500)
 
-  Job         Job[]
-  Application Application[]
+  Job          Job[]
+  Application  Application[]
+  Notification Notification[]
 }
 
 model Job {
@@ -39,7 +40,8 @@ model Job {
 
   user User @relation(fields: [companyId], references: [id])
 
-  Application Application[]
+  Application  Application[]
+  Notification Notification[]
 }
 
 model Application {
@@ -49,4 +51,16 @@ model Application {
   answer        String?
   user          User    @relation(fields: [userId], references: [id])
   job           Job     @relation(fields: [jobId], references: [id])
+}
+
+model Notification {
+  notificationId   String   @id @default(cuid())
+  createdAt        DateTime @default(now())
+  userId           String
+  jobId            String
+  visualized       Boolean
+  notificationText String
+
+  user User @relation(fields: [userId], references: [id])
+  job  Job  @relation(fields: [jobId], references: [id])
 }

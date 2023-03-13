@@ -1,28 +1,44 @@
-import { Notification } from '../models/Notification';
+import { PrismaClient } from '@prisma/client';
 
-async function list() {
-  //   return await Notification.find({
-  //     $or: [
-  //       { userType: { $in: [...clientType] } },
-  //       { userType: 'all' }
-  //     ]
-  //   });
+// import { Notification } from '../models/Notification';
+
+const prisma = new PrismaClient();
+
+async function create(
+  userId: string,
+  jobId: string,
+  visualized: boolean,
+  notificationText: string
+) {
+
+  return await prisma.notification.create({
+    data: {
+      userId,
+      jobId,
+      visualized,
+      notificationText
+    }
+  });
+
 }
 
-async function create(type, text, userType) {
 
-  return await Notification.create({ type, text, userType });
-
+async function listAllUserNotifications(userId: string) {
+  return await prisma.notification.findMany({
+    where: {
+      userId: userId
+    }
+  });
 }
 
-async function listAll() {
+// async function listAll() {
 
-  return await Notification.find();
+//   return await Notification.find();
 
-}
+// }
 
-async function deleteAll() {
-  return await Notification.deleteMany({});
-}
+// async function deleteAll() {
+//   return await Notification.deleteMany({});
+// }
 
-export { list, create, listAll, deleteAll };
+export { create, listAllUserNotifications };
