@@ -36,6 +36,7 @@ class UserController {
         return response.json({
           userId: user.id,
           userEmail: user.email,
+          userName: user.name
         });
       }
 
@@ -172,7 +173,8 @@ class UserController {
         isAdmin: userData?.isAdmin,
         isCompany: userData?.isCompany,
         userDescription: userData?.description,
-        email: userData?.email
+        email: userData?.email,
+        userId: userData?.id
       };
 
       if (userData) {

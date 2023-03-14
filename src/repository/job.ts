@@ -122,7 +122,7 @@ async function listApplicationsAndUser(jobId: string, userId: string) {
   });
 }
 
-async function repplySingleJobApplications(applicationId: string, applicationReply: string) {
+async function repplySingleJobApplication(applicationId: string, applicationReply: string) {
   return await prisma.application.update({
     where: {
       applicationId: applicationId
@@ -154,5 +154,5 @@ export {
   listUsersByApplication,
   listApplicationsAndUser,
   repplyAllJobApplications,
-  repplySingleJobApplications
+  repplySingleJobApplication
 };

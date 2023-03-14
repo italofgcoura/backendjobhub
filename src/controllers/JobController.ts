@@ -223,14 +223,12 @@ class JobController {
 
     try {
 
-      const applicationUpdated = await jobRepository.repplySingleJobApplications(applicationId, applicationReply);
+      const applicationUpdated = await jobRepository.repplySingleJobApplication(applicationId, applicationReply);
 
       if (userId) {
-        const text = 'Texto de teste de notificação';
 
-        const newNotification = await NotificationController.createNotification(userId, selectedJobId, false, text);
+        await NotificationController.createNotification(userId, selectedJobId, false, request);
 
-        console.log('newNotification', newNotification);
       }
 
       return response.status(200).json({ msg: applicationUpdated });
@@ -253,6 +251,12 @@ class JobController {
 
       const applicationUpdated = await jobRepository.repplyAllJobApplications(jobId, applicationReply);
 
+      const allApplications = await jobRepository.listApplications(jobId);
+
+      for (const application of allApplications) {
+        await NotificationController.createNotification(application.userId, jobId, false, request);
+      }
+
       return response.status(200).json({ msg: applicationUpdated });
 
     } catch (error) {
@@ -260,25 +264,6 @@ class JobController {
       return response.status(500).json({ error });
     }
   }
-
-
-
-
-  // async deleteJob(req, res) {
-
-  //   const { id } = req.params;
-
-  //   const deleted = await repository.deleteJob(id);
-
-  //   if (deleted.acknowledged) {
-  //     return res.sendStatus(204);
-  //   }
-
-  //   return res.sendStatus(500);
-
-  // }
-
-
 
 }
 

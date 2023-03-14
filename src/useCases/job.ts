@@ -49,7 +49,6 @@ async function updateJob(
     { _id: jobId },
     jobToUpdate
   );
-  console.log('res', res);
   return res;
 }
 

@@ -2,25 +2,47 @@ import * as notificationRepository from '../repository/notification';
 
 import { recoverUserFromToken } from '../useCases/token/recoverUserFromToken';
 
+import * as userRepository from '../repository/user';
+
+import { IUserData } from '../interfaces/userInterfaces';
+
+import { io } from '../index';
+
 class NotificationController {
 
   async createNotification(
     userId: string,
     jobId: string,
     visualized: boolean,
-    notificationText: string
+    request: any
   ) {
     try {
 
-      const notification = await notificationRepository.create(
-        userId,
-        jobId,
-        visualized,
-        notificationText
-      );
-      console.log('notification', notification);
+      const notificationExists = await notificationRepository.listNotificationByUserAndJobId(userId, jobId);
 
-      return true;
+      if (!notificationExists) {
+
+        const userDataFromToken = recoverUserFromToken(request.headers['authorization']);
+
+
+        const user: IUserData | null = await userRepository.listUserById(userDataFromToken.id);
+
+        const notificationText = `A empresa ${user?.name ?? ''} respondeu à sua candidatura.`;
+
+        const newNotificationCreated = await notificationRepository.create(
+          userId,
+          jobId,
+          visualized,
+          notificationText
+        );
+
+        console.log('newNotificationCreated', newNotificationCreated);
+
+        io.emit(userId, newNotificationCreated);
+
+        return true;
+
+      }
     } catch (error) {
       console.log('error creating notification', error);
       return false;
@@ -34,10 +56,6 @@ class NotificationController {
       const userDataFromToken = recoverUserFromToken(request.headers['authorization']);
 
       const userNotification = await notificationRepository.listAllUserNotifications(userDataFromToken.id);
-
-      console.log('userDataFromToken.id', userDataFromToken.id);
-
-      console.log('userNotification', userNotification);
 
       return response.status(200).json(userNotification);
     }

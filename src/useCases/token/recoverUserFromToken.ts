@@ -1,31 +1,16 @@
-// import jwt from 'jsonwebtoken';
-// import fs from 'fs';
-
 interface UserIDJwtPayload {
-  user_id: string
+  user_id: string,
+  name: string,
 }
+
+interface iProps { id: string, name: string }
 
 import jwt_decode from 'jwt-decode';
 
-// const publicKey = fs.readFileSync('./public.key', 'utf8');
-
-export const recoverUserFromToken = (token: string): { id: string } => {
-
-  // const decodedToken = jwt.verify(token, publicKey, { algorithms: ['RS256'] },
-  //   function (err, decoded) {
-
-  //     return decoded;
-
-  //   }
-  // ) as unknown as UserIDJwtPayload;
+export const recoverUserFromToken = (token: string): iProps => {
 
   const decodedToken = jwt_decode(token) as unknown as UserIDJwtPayload;
 
-  return { id: decodedToken.user_id };
+  return { id: decodedToken.user_id, name: decodedToken.name };
 
 };
-
-
-// import jwt_decode from 'jwt-decode';
-
-// export const recoverUserFromToken = (token: string) => jwt_decode(token);

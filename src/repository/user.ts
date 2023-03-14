@@ -49,8 +49,11 @@ async function updateUserData(
 
 async function listUserById(id: string) {
 
-  return await prisma.user.findFirst({ where: { id: id } });
-
+  const user = await prisma.user.findFirst({ where: { id: id } });
+  if (user) {
+    return user;
+  }
+  return null;
 }
 
 

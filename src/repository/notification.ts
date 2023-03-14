@@ -31,6 +31,18 @@ async function listAllUserNotifications(userId: string) {
   });
 }
 
+async function listNotificationByUserAndJobId(userId: string, jobId: string) {
+
+  return await prisma.notification.findFirst({
+    where: {
+      AND: [
+        { jobId: jobId },
+        { userId: userId }
+      ]
+    },
+  });
+}
+
 // async function listAll() {
 
 //   return await Notification.find();
@@ -41,4 +53,4 @@ async function listAllUserNotifications(userId: string) {
 //   return await Notification.deleteMany({});
 // }
 
-export { create, listAllUserNotifications };
+export { create, listAllUserNotifications, listNotificationByUserAndJobId };
