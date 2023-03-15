@@ -18,9 +18,10 @@ model User {
   isAdmin     Boolean?
   description String?  @db.VarChar(500)
 
-  Job          Job[]
-  Application  Application[]
-  Notification Notification[]
+  Job             Job[]
+  Application     Application[]
+  Notification    Notification[]
+  NewNotification NewNotification[]
 }
 
 model Job {
@@ -63,4 +64,11 @@ model Notification {
 
   user User @relation(fields: [userId], references: [id])
   job  Job  @relation(fields: [jobId], references: [id])
+}
+
+model NewNotification {
+  userId          String  @id
+  newNotification Boolean
+
+  user User @relation(fields: [userId], references: [id])
 }

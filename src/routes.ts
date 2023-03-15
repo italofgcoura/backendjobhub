@@ -37,6 +37,8 @@ router.get('/user', jwtVerify, UserController.listUser);
 
 // notifications routes
 router.get('/notifications', jwtVerify, NotificationController.listUserNotifications);
+router.patch('/notifications/visualized', jwtVerify, NotificationController.markNewNotificationVisualized);
+router.patch('/notifications/notification-visualized', jwtVerify, NotificationController.markNotificationAsRead);
 // router.get('/notifications/all', jwtVerify, NotificationController.listAllNotifications);
 // router.post('/notification', jwtVerify, NotificationController.createNotification);
 // router.delete('/notifications', jwtVerify, NotificationController.deleteAll);

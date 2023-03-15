@@ -57,12 +57,42 @@ class NotificationController {
 
       const userNotification = await notificationRepository.listAllUserNotifications(userDataFromToken.id);
 
-      return response.status(200).json(userNotification);
+      const newUserNotifications = await notificationRepository.checkIfNewNotification(userDataFromToken.id);
+
+      console.log('newUserNotifications', newUserNotifications);
+
+      return response.status(200).json({
+        notifications: userNotification, newNotification: newUserNotifications?.newNotification
+      });
     }
     catch (error) {
       console.log(error);
     }
 
+  }
+
+  async markNewNotificationVisualized(request, response) {
+    try {
+      const userDataFromToken = recoverUserFromToken(request.headers['authorization']);
+      await notificationRepository.updateNewNotificationTable(userDataFromToken.id);
+    } catch (error) {
+      console.log('error marking visualized', error);
+    }
+  }
+
+  async markNotificationAsRead(request, response) {
+
+    const { notificationId } = request.body;
+
+    try {
+      const markedAsRead = await notificationRepository.markNotificationAsRead(notificationId);
+
+      console.log(markedAsRead);
+
+      return response.status(200).json({ markedAsRead });
+    } catch (error) {
+      console.log('Error marking notification readed...', error);
+    }
   }
 
   // async deleteAll(req, res) {
