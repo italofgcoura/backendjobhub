@@ -20,6 +20,41 @@ async function create(
     }
   });
 
+  await updateNewNotificationTable(userId, true);
+
+  return newNotification;
+}
+
+async function updateNotificationMessage(notificationId: string, newMessage: string, userId: string) {
+
+  const updated = await prisma.notification.update({
+    where: {
+      notificationId: notificationId
+    },
+    data: {
+      notificationText: newMessage,
+      visualized: false
+    }
+  });
+
+  await updateNewNotificationTable(userId, true);
+
+  return updated;
+}
+
+async function checkIfNewNotification(userId: string) {
+  return await prisma.newNotification.findFirst({ where: { userId: userId } });
+}
+
+async function updateNewNotificationTable(userId: string, newNotification: boolean) {
+  // return await prisma.newNotification.update({
+  //   where: {
+  //     userId: userId
+  //   },
+  //   data: {
+  //     newNotification: false
+  //   }
+  // });
   const existsNewNotificationUser = await prisma.newNotification.findFirst({ where: { userId: userId } });
 
   if (existsNewNotificationUser) {
@@ -28,7 +63,7 @@ async function create(
         userId: userId
       },
       data: {
-        newNotification: true
+        newNotification: newNotification
       }
     });
 
@@ -37,27 +72,10 @@ async function create(
     await prisma.newNotification.create({
       data: {
         userId: userId,
-        newNotification: true
+        newNotification: newNotification
       }
     });
   }
-
-  return newNotification;
-}
-
-async function checkIfNewNotification(userId: string) {
-  return await prisma.newNotification.findFirst({ where: { userId: userId } });
-}
-
-async function updateNewNotificationTable(userId: string) {
-  return await prisma.newNotification.update({
-    where: {
-      userId: userId
-    },
-    data: {
-      newNotification: false
-    }
-  });
 }
 
 async function listAllUserNotifications(userId: string) {
@@ -104,5 +122,7 @@ async function markNotificationAsRead(notificationId: string) {
 export {
   create, listAllUserNotifications,
   listNotificationByUserAndJobId, checkIfNewNotification,
-  updateNewNotificationTable, markNotificationAsRead
+  updateNewNotificationTable,
+  markNotificationAsRead,
+  updateNotificationMessage
 };

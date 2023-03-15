@@ -20,12 +20,11 @@ class NotificationController {
 
       const notificationExists = await notificationRepository.listNotificationByUserAndJobId(userId, jobId);
 
+      const userDataFromToken = recoverUserFromToken(request.headers['authorization']);
+
+      const user: IUserData | null = await userRepository.listUserById(userDataFromToken.id);
+
       if (!notificationExists) {
-
-        const userDataFromToken = recoverUserFromToken(request.headers['authorization']);
-
-
-        const user: IUserData | null = await userRepository.listUserById(userDataFromToken.id);
 
         const notificationText = `A empresa ${user?.name ?? ''} respondeu à sua candidatura.`;
 
@@ -43,6 +42,15 @@ class NotificationController {
         return true;
 
       }
+
+      const notificationText = `A empresa ${user?.name ?? ''} atualizou a resposta da sua candidatura.`;
+
+      const updated = await notificationRepository.updateNotificationMessage(notificationExists.notificationId, notificationText, userId);
+
+      console.log(updated);
+
+      io.emit(userId, updated);
+
     } catch (error) {
       console.log('error creating notification', error);
       return false;
@@ -74,7 +82,9 @@ class NotificationController {
   async markNewNotificationVisualized(request, response) {
     try {
       const userDataFromToken = recoverUserFromToken(request.headers['authorization']);
-      await notificationRepository.updateNewNotificationTable(userDataFromToken.id);
+      await notificationRepository.updateNewNotificationTable(userDataFromToken.id, false);
+
+      return response.sendStatus(204);
     } catch (error) {
       console.log('error marking visualized', error);
     }
