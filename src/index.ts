@@ -3,7 +3,10 @@
 import app from './app';
 // const server = http.createServer(app);
 
-import http from 'node:http';
+// import http from 'node:http';
+
+const http = require('http');
+
 import { Server } from 'socket.io';
 const port = 3001;
 
