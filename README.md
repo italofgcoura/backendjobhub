@@ -8,5 +8,6 @@ At first, and because of the low entities, this project was started with MongoDb
 to a swl database. So, using the repository pattern the changes in the code was very low, and this change was fast. 
 The code for the MongoDb was NOT removed.
 
+For the real-time notifications was used socket.io.
 
 
